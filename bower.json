@@ -19,7 +19,9 @@
 		"angular":"~1.2.0",
 		"angular-sanitize":"~1.2.0",
 		"angular-route":"~1.2.0",
-		"angular-touch":"~1.2.0"
+		"angular-touch":"~1.2.0",
+		"angular-base64": "~2.0.2",
+		"angular-local-storage": "~0.0.1"
 	},
 	"devDependencies": {
 	}
