@@ -1,0 +1,28 @@
+{
+	"name": "ntipa-angular",
+	"version": "1.0.0",
+	"authors": [
+		"tindaro.tornabebe@gmail.com"
+	],
+	"description": "ntipa server angular",
+	"keywords": [
+		"ntipa",
+		"service",
+		"oauth2",
+		"service",
+		"interation"
+	],
+	"license": "MIT",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	],
+	"dependencies": {
+		"angular":"~1.2.0"
+	},
+	"devDependencies": {
+	}
+}
