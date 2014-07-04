@@ -9,11 +9,6 @@
 
 
 angular.module('ipublic.ntipa-angular', [])
-.factory('Account', ['$resource',
-    function ($resource) {
-        return $resource('./app/rest/account', {}, {
-        });
-    }])
 .factory('Ente', ['$resource',
    function ($resource) {
        return $resource('/manager/app/rest/account/:action/:enteId/:gruppoId', {}, {
