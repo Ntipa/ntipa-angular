@@ -28,8 +28,8 @@ angular.module('ipublic.ntipa-angular', [])
             'get': { method: 'GET', isArray: true}
         });
     }])
-.factory('Oauth2Service', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','Ente','$location','$base64',
-    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, Ente,$location,$base64) {
+.factory('Oauth2Service', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','$location','$base64',
+    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService,$location,$base64) {
         var keyAuthorization = 'Authorization';
         var keyAccessToken = 'access.token';
         var keySession = 'user.session';
@@ -231,8 +231,8 @@ angular.module('ipublic.ntipa-angular', [])
 
             };
 }])
-.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','Ente','Oauth2Service',
-	function ($rootScope, $http, authService, Session, Account,$log, localStorageService, Ente, Oauth2Service) {
+.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service',
+	function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service) {
 		var keyAuthorization = 'Authorization';
 		var keyAccessToken = 'access.token';
 		var keySession = 'user.session';
