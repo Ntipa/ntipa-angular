@@ -289,9 +289,10 @@ angular.module('ipublic.ntipa-angular', [])
 			valid: function (authorizedRoles) {
 				$log.info('on valid authorizedRoles'+authorizedRoles);
 
-				$http.get('/box/protected/transparent.gif', {
+				/*$http.get('/authserver/protected/transparent.gif', {
 					ignoreAuthModule: 'ignoreAuthModule'
 				}).success(function (data, status, headers, config) {
+                */
 					if (!!Session.login) {
 						Account.get(function(data) {
 							Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
@@ -307,9 +308,11 @@ angular.module('ipublic.ntipa-angular', [])
                         });
 					}
 					$rootScope.authenticated = !!Session.login;
-				}).error(function (data, status, headers, config) {
+				/*
+                }).error(function (data, status, headers, config) {
 					$rootScope.authenticated = false;
 				});
+                */
 			},
 			isAuthorized: function (authorizedRoles) {
         // $log.info('on isAuthorized authorizedRoles'+authorizedRoles);
