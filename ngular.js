@@ -9,7 +9,7 @@
 
 
 angular.module('ipublic.ntipa-angular', [])
-.factory('Ente', ['$resource',
+.factory('EnteService', ['$resource',
    function ($resource) {
        return $resource('/manager/app/rest/account/:action/:enteId/:gruppoId', {}, {
            'enties': { method: 'GET', isArray: true, params: { 'action': 'enties'}},
@@ -108,7 +108,7 @@ angular.module('ipublic.ntipa-angular', [])
                     $log.debug('data.enteId:'+data.enteId);
                     
                     if(data.enteId != null && data.enteId != 'null' ){
-                        Ente.organigramma({enteId:data.enteId},function(data){
+                        EnteService.organigramma({enteId:data.enteId},function(data){
                             $rootScope.organigramma = data;
                             localStorageService.add(keyOrganigramma, $rootScope.organigramma);
 
@@ -150,7 +150,7 @@ angular.module('ipublic.ntipa-angular', [])
                         });
                 }
 
-                Ente.enties(function(data){
+                EnteService.enties(function(data){
                  localStorageService.add(keyEntiesSession, data );
                  $rootScope.enties = data;
                 });
