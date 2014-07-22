@@ -63,11 +63,11 @@ angular.module('ipublic.ntipa-angular', [])
 
                 recursiveVociTitolario(nodo.nodes,nodo.titolarioName , titolarioId);
             });
-        };
+        }
 
         function recursiveStruttura(struttura,paths){
             $log.debug('struttura:'+struttura);
-            var paths = paths+ ' ' +struttura.name;
+            paths = paths+ ' ' +struttura.name;
 
             angular.forEach(struttura.categorie, function(categoria) {
              $rootScope.categorias.push(categoria);
@@ -96,7 +96,7 @@ angular.module('ipublic.ntipa-angular', [])
               recursiveStruttura(struttura2,paths);
           });
 
-        };
+        }
 
         return {
             loadAccount:  function (){
@@ -107,7 +107,7 @@ angular.module('ipublic.ntipa-angular', [])
                     localStorageService.add(keySession, data);
                     $log.debug('data.enteId:'+data.enteId);
                     
-                    if(data.enteId != null && data.enteId != 'null' ){
+                    if(data.enteId !== null && data.enteId !== 'null' ){
                         EnteService.organigramma({enteId:data.enteId},function(data){
                             $rootScope.organigramma = data;
                             localStorageService.add(keyOrganigramma, $rootScope.organigramma);
@@ -169,7 +169,7 @@ angular.module('ipublic.ntipa-angular', [])
                 var data = localStorageService.get(keySession);
                 $rootScope.enties =localStorageService.get(keyEntiesSession );
 
-                if(data != null && data.login != null){
+                if(data !== null && data.login !== null){
                     $rootScope.account = data;
                     Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
                     $rootScope.users = [];
@@ -231,8 +231,8 @@ angular.module('ipublic.ntipa-angular', [])
 
             };
 }])
-.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service',
-	function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service) {
+.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service', 'ENV',
+	function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV) {
 		var keyAuthorization = 'Authorization';
 		var keyAccessToken = 'access.token';
 		var keySession = 'user.session';
@@ -248,7 +248,8 @@ angular.module('ipublic.ntipa-angular', [])
 		return {
 
 			login: function (param) {
-				var data = "grant_type=password&client_id=box&scope=read&username="+  param.username +"&password="+  param.password ;
+
+				var data = "grant_type=password&client_id="+ENV.ClientId+"&scope=read&username="+  param.username +"&password="+  param.password ;
 				$log.info('data:' + data);
 				Oauth2Service.clear();
 				$http.post('/authserver/oauth/token', data, {
