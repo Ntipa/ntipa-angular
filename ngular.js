@@ -100,6 +100,7 @@ angular.module('ipublic.ntipa-angular', [])
 
         return {
             loadAccount:  function (){
+                $log.debug('loadAccount:' );
                 Account.get(function(data) {
                     
 
@@ -195,11 +196,12 @@ angular.module('ipublic.ntipa-angular', [])
 
             }
             },clear: function () {
+                $log.info('clear');
                 $rootScope.authenticationError = false;
                 $rootScope.authenticationError = false;
                 $rootScope.authenticated = false;
 
-                $log.info('clear');
+               
                 $rootScope.username = '';
                 $rootScope.password = '';
                 $rootScope.account = null;
@@ -220,6 +222,18 @@ angular.module('ipublic.ntipa-angular', [])
                localStorageService.remove(keyUsers);
             
 
+                $rootScope.authenticated = false;
+                $rootScope.account = null;
+                $rootScope.user = null;
+                localStorageService.remove(keyAuthorization);
+                localStorageService.remove(keyAccessToken);
+                localStorageService.remove(keySession);
+                delete $http.defaults.headers.common[keyAuthorization];
+                $rootScope.token = '';
+                $rootScope.accessToken = '';
+                authService.loginCancelled();
+                
+
                Session.invalidate();
 
               delete $http.defaults.headers.common[keyAuthorization];
@@ -232,129 +246,115 @@ angular.module('ipublic.ntipa-angular', [])
             };
 }])
 .factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service', 'ENV',
-	function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV) {
-		var keyAuthorization = 'Authorization';
-		var keyAccessToken = 'access.token';
-		var keySession = 'user.session';
-		var keyEntiesSession = 'enties.session';
+    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV) {
+        var keyAuthorization = 'Authorization';
+        var keyAccessToken = 'access.token';
+        var keySession = 'user.session';
+        var keyEntiesSession = 'enties.session';
 
-		var keyCategorias = 'categorias';
-		var keyTitolaris = 'titolaris';
-		var keyStrutturas = 'strutturas';
-		var keyUsers = 'users';
+        var keyCategorias = 'categorias';
+        var keyTitolaris = 'titolaris';
+        var keyStrutturas = 'strutturas';
+        var keyUsers = 'users';
 
 
 
-		return {
+        return {
 
-			login: function (param) {
+            login: function (param) {
 
-				var data = "grant_type=password&client_id="+ENV.ClientId+"&scope=read&username="+  param.username +"&password="+  param.password ;
-				$log.info('data:' + data);
-				Oauth2Service.clear();
-				$http.post('/authserver/oauth/token', data, {
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					ignoreAuthModule: 'ignoreAuthModule'
-				}).success(function (data, status, headers, config) {
-					$rootScope.authenticationError = false;
-					$rootScope.accessToken = data.access_token;
-					var token = 'Bearer ' + $rootScope.accessToken;
-					$log.info('Authorization:' + token);
-					$http.defaults.headers.common[keyAuthorization] = token;
+                var data = "grant_type=password&client_id="+ENV.ClientId+"&scope=read&username="+  param.username +"&password="+  param.password ;
+                $log.info('data:' + data);
+                Oauth2Service.clear();
+                $http.post('/authserver/oauth/token', data, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    ignoreAuthModule: 'ignoreAuthModule'
+                }).success(function (data, status, headers, config) {
+                    $rootScope.authenticationError = false;
+                    $rootScope.accessToken = data.access_token;
+                    var token = 'Bearer ' + $rootScope.accessToken;
+                    $log.info('login Authorization:' + token);
+                    $http.defaults.headers.common[keyAuthorization] = token;
 
-					localStorageService.add(keyAuthorization, token);
-					localStorageService.add(keyAccessToken, $rootScope.accessToken);
+                    localStorageService.add(keyAuthorization, token);
+                    localStorageService.add(keyAccessToken, $rootScope.accessToken);
 
-					Oauth2Service.loadAccount();
-				}).error(function (data, status, headers, config) {
-					$rootScope.authenticationError = true;
-					Session.invalidate();
-				});
-			},
-			changeRoles: function (enteId,gruppoId) {
-				$log.info('enteId:' + enteId);
-				$log.info('gruppoId:' + gruppoId);
-
-				var data = $rootScope.accessToken+"/"+enteId+"/"+gruppoId;
-
-				$http.get('/authserver/oauth/users/change/roles/'+data )
-				.success(function (data, status, headers, config) {
-					Oauth2Service.loadAccount();
-				}).error(function (data, status, headers, config) {
-					$rootScope.authenticationError = true;
-                    //Session.invalidate();
+                    Oauth2Service.loadAccount();
+                }).error(function (data, status, headers, config) {
+                    $rootScope.authenticationError = true;
+                    Session.invalidate();
                 });
-			},
-			valid: function (authorizedRoles) {
-				$log.info('on valid authorizedRoles'+authorizedRoles);
+            },
+            changeRoles: function (enteId,gruppoId) {
+                $log.info('enteId:' + enteId);
+                $log.info('gruppoId:' + gruppoId);
 
-				/*$http.get('/authserver/protected/transparent.gif', {
-					ignoreAuthModule: 'ignoreAuthModule'
-				}).success(function (data, status, headers, config) {
-                */
-					if (!!Session.login) {
-						Account.get(function(data) {
-							Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
-							$rootScope.account = data;
+                var data = $rootScope.accessToken+"/"+enteId+"/"+gruppoId;
 
-							if (!$rootScope.isAuthorized(authorizedRoles)) {
-								event.preventDefault();
+                $http.get('/authserver/oauth/users/change/roles/'+data )
+                .success(function (data, status, headers, config) {
+                    Oauth2Service.loadAccount();
+                }).error(function (data, status, headers, config) {
+                    $rootScope.authenticationError = true;
+                });
+            },
+            valid: function (authorizedRoles) {
+                $log.info('on valid authorizedRoles'+authorizedRoles);
+
+                $log.info('on valid !!Session.login'+!!Session.login);
+                
+
+                    if (!!Session.login) {
+                            if (!$rootScope.isAuthorized(authorizedRoles)) {
+                                event.preventDefault();
                                 // user is not allowed
                                 $rootScope.$broadcast("event:auth-notAuthorized");
                             }
-
                             $rootScope.authenticated = true;
-                        });
-					}
-					$rootScope.authenticated = !!Session.login;
-				/*
-                }).error(function (data, status, headers, config) {
-					$rootScope.authenticated = false;
-				});
-                */
-			},
-			isAuthorized: function (authorizedRoles) {
-        // $log.info('on isAuthorized authorizedRoles'+authorizedRoles);
-         //$log.info(Session.userRoles);
+                    }
 
+                    $rootScope.authenticated = !!Session.login;
+            },
+            isAuthorized: function (authorizedRoles) {
+    
          if (!angular.isArray(authorizedRoles)) {
-			if (authorizedRoles == '*') {
-				return true;
-			}
+            if (authorizedRoles == '*') {
+                return true;
+            }
 
-			authorizedRoles = [authorizedRoles];
+            authorizedRoles = [authorizedRoles];
          }
-			var isAuthorized = false;
-			angular.forEach(authorizedRoles, function(authorizedRole) {
-			var authorized = (!angular.isUndefined(Session.userRoles) && !!Session.login && !angular.isUndefined(Session.userRoles) &&
-			Session.userRoles.indexOf(authorizedRole) !== -1);
-			if (authorized || authorizedRole == '*') {
-				isAuthorized = true;
-			}
+            var isAuthorized = false;
+            angular.forEach(authorizedRoles, function(authorizedRole) {
+            var authorized = (!angular.isUndefined(Session.userRoles) && !!Session.login && !angular.isUndefined(Session.userRoles) &&
+            Session.userRoles.indexOf(authorizedRole) !== -1);
+            if (authorized || authorizedRole == '*') {
+                isAuthorized = true;
+            }
          });
 
          return isAuthorized;
      },
      logout: function () {
-		$rootScope.authenticationError = false;
-		$rootScope.authenticated = false;
-		$rootScope.account = null;
-		$rootScope.user = null;
-		localStorageService.remove(keyAuthorization);
-		localStorageService.remove(keyAccessToken);
-		localStorageService.remove(keySession);
-		delete $http.defaults.headers.common[keyAuthorization];
-		$rootScope.token = '';
-		$rootScope.accessToken = '';
-		$http.get('/box/app/logout');
-		Oauth2Service.clear();
-		authService.loginCancelled();
+        var logoutUrl = '/authserver/oauth/users/logout/'+ Session.login +'/tokens/'+$rootScope.accessToken;
+        $log.debug("logoutUrl:"+logoutUrl);
+      
+        $http.get( logoutUrl   )
+        .success(function (data, status, headers, config) {
+                 Session.invalidate();
+                 Oauth2Service.clear();
 
+         })
+        .error(function (data, status, headers, config) {
+                   Oauth2Service.clear();
+
+          });
+        
      },
      loadLocalToken: function() {
-		Oauth2Service.loadLocalToken();
+        Oauth2Service.loadLocalToken();
      }
  };
 }]);
