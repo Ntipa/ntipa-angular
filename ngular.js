@@ -148,7 +148,11 @@ angular.module('ipublic.ntipa-angular', [])
                             } );
                             localStorageService.add(keyMapTitolaris, $rootScope.mapTitolaris);
 
+                           
+                         $rootScope.$broadcast('organigrammaLoadedEvent', data);
                         });
+
+                    $rootScope.$broadcast('enteLoadedEvent', data);
                 }
 
                 EnteService.enties(function(data){
@@ -187,7 +191,7 @@ angular.module('ipublic.ntipa-angular', [])
                     $rootScope.mapCategorias =    localStorageService.get(keyMapCategorias );
                     $rootScope.mapTitolaris =    localStorageService.get(keyMapTitolaris );
 
-
+                    $rootScope.$broadcast('localTokenLoadedEvent', data);
                     $log.info('getLocaluser:' );
                     $log.info($rootScope.account);
                 }else{
