@@ -361,4 +361,90 @@ angular.module('ipublic.ntipa-angular', [])
         Oauth2Service.loadLocalToken();
      }
  };
+}])
+.factory('ngstomp',  ['$rootScope', '$log',  
+  function($rootScope, $log ) {
+    var self = this;
+    
+    self.stompClient = {};
+
+        function NGStomp(url) {
+           
+      var  headers = {
+                 
+                       'login':  $rootScope.account.login ,
+                       'access_token': $rootScope.accessToken 
+                     
+                   };
+ 
+      var  socket = new SockJS
+                     ( url 
+                     , 'tino:tino'
+                     , {   'debug':false
+                         , 'devel' : false
+                         , 'info' :{ 'headers': headers } 
+                         , 'protocols_whitelist':
+                             [ 'xdr-streaming'
+                             , 'xdr-polling'
+                             , 'xhr-streaming'
+                             , 'iframe-eventsource'
+                             , 'iframe-htmlfile'
+                             , 'xhr-polling'
+                             , 'websocket'
+                             ]
+
+                       }
+                     );
+
+           self.stompClient = Stomp.over( socket );
+ 
+        }
+
+
+        NGStomp.prototype.subscribe = function(queue, callback) {
+            self.stompClient.subscribe(queue, function() {
+                var args = arguments;
+                $rootScope.$apply(function() {
+                    callback(args[0]);
+                });
+            });
+        };
+
+        NGStomp.prototype.send = function(queue, headers, data) {
+          self.stompClient.send(queue, headers, JSON.stringify(data));
+        };
+
+        NGStomp.prototype.connect = function(user, password, on_connect, on_error) {
+
+          self.stompClient.connect(user, password,
+                function() {
+              var args = arguments;
+                    $rootScope.$apply(function() {
+                        on_connect.call(undefined,args);
+                    });
+                },
+                function() {
+                  var args = arguments;
+                    $rootScope.$apply(function() {                      
+                        on_error.apply(undefined,args);
+                    });
+                });
+        };
+
+        NGStomp.prototype.disconnect = function(callback) {
+          self.stompClient.disconnect(function() {
+                var args = arguments;
+                $rootScope.$apply(function() {
+                    callback.apply(args);
+                });
+            });
+        };
+
+        return function(url) {
+        
+        
+
+          return new NGStomp( url );
+        };
 }]);
+
