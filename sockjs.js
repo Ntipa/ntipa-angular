@@ -790,6 +790,9 @@ AbstractXHRObject.prototype._start = function(method, url, payload, opts) {
    
     if( headers  )  {
         for(var key in headers) {
+
+        console.log(key+"---key-------------------------------------------"+ headers[key]);
+
             that.xhr.setRequestHeader(key, headers[key]);
         }
 
