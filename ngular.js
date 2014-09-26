@@ -368,16 +368,11 @@ angular.module('ipublic.ntipa-angular', [])
     
     self.stompClient = {};
 
-        function NGStomp(url) {
+     function NGStomp(url,headers) {
            
-      var  headers = {
-                 
-                       'login':  $rootScope.account.login ,
-                       'access_token': $rootScope.accessToken 
-                     
-                   };
+     
  
-      var  socket = new SockJS
+     var  socket = new SockJS
                      ( url 
                      , 'tino:tino'
                      , {   'debug':false
@@ -397,7 +392,6 @@ angular.module('ipublic.ntipa-angular', [])
                      );
 
            self.stompClient = Stomp.over( socket );
- 
         }
 
 
