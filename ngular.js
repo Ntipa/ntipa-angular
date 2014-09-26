@@ -371,7 +371,8 @@ angular.module('ipublic.ntipa-angular', [])
      function NGStomp(url,headers) {
            
      
- 
+    $log.debug(headers);
+
      var  socket = new SockJS
                      ( url 
                      , 'tino:tino'
