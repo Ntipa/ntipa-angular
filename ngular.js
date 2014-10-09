@@ -235,8 +235,6 @@ angular.module('ipublic.ntipa-angular', [])
                 delete $http.defaults.headers.common[keyAuthorization];
                 $rootScope.token = '';
                 $rootScope.accessToken = '';
-                authService.loginCancelled();
-                
 
                Session.invalidate();
 
