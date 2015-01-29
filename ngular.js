@@ -75,9 +75,10 @@ angular.module('ipublic.ntipa-angular', [])
 
               angular.forEach(struttura.titolari, function(titolario) {
                 titolario.nodes = angular.fromJson(titolario.voci);
-                titolario.voci = null;
-
+                delete titolario.voci ;
                 recursiveVociTitolario(titolario.nodes,titolario.name,titolario.id);
+                delete titolario.nodes ;
+
                 
              });
 
