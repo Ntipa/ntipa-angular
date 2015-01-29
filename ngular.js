@@ -47,21 +47,23 @@ angular.module('ipublic.ntipa-angular', [])
 
 
 
-        function recursiveVociTitolario(nodes,titolarioName,titolarioId){
+        function recursiveVociTitolario(nodes,titolarioName, titolarioId, titolarioCodice){
 
             angular.forEach(nodes, function(nodo) {
-                nodo.titolarioId = titolarioId;
-                nodo.titolarioName = titolarioName ;
 
-                var idVoce = nodo.titolarioId+"|"+nodo.id;
+                var nodoCorrente ={
+                    titolarioId: titolarioId,
+                    titolarioName: titolarioName,
+                    titolarioCodice: titolarioCodice,
+                    titolarioIdVoce: nodo.id,
+                    titolarioCodiceVoce: nodo.indice,
+                    titolarioNomeVoce: nodo.voce,
+                };
+               // $log.debug(nodo);
+               // $log.debug(nodoCorrente);
+                $rootScope.titolari.push(nodoCorrente);
 
-                //var idBase64Voce = $base64.encode(idVoce);
-                
-                nodo.idVoce = idVoce ;
-
-                $rootScope.titolari.push(nodo);
-
-                recursiveVociTitolario(nodo.nodes,nodo.titolarioName , titolarioId);
+                recursiveVociTitolario(nodo.nodes, titolarioName , titolarioId, titolarioCodice);
             });
         }
 
@@ -75,9 +77,7 @@ angular.module('ipublic.ntipa-angular', [])
 
               angular.forEach(struttura.titolari, function(titolario) {
                 titolario.nodes = angular.fromJson(titolario.voci);
-                delete titolario.voci ;
-                recursiveVociTitolario(titolario.nodes,titolario.name,titolario.id);
-                delete titolario.nodes ;
+                recursiveVociTitolario(titolario.nodes,titolario.name,titolario.id, titolario.codice);
 
                 
              });
