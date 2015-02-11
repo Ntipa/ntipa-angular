@@ -269,7 +269,7 @@ angular.module('ipublic.ntipa-angular', [])
                 var data = "grant_type=password&client_id="+ENV.ClientId+"&scope=read&username="+  param.username +"&password="+  param.password ;
                 $log.info('data:' + data);
                 Oauth2Service.clear();
-                $http.post('/authserver/oauth/token', data, {
+                $http.post('/manager/oauth/token', data, {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
@@ -296,7 +296,7 @@ angular.module('ipublic.ntipa-angular', [])
 
                 var data = $rootScope.accessToken+"/"+enteId+"/"+gruppoId;
 
-                $http.get('/authserver/oauth/users/change/roles/'+data )
+                $http.get('/manager/oauth/users/change/roles/'+data )
                 .success(function (data, status, headers, config) {
                     Oauth2Service.loadAccount();
                 }).error(function (data, status, headers, config) {
@@ -341,7 +341,7 @@ angular.module('ipublic.ntipa-angular', [])
          return isAuthorized;
      },
      logout: function () {
-        var logoutUrl = '/authserver/oauth/users/logout/'+ Session.login +'/tokens/'+$rootScope.accessToken;
+        var logoutUrl = '/manager/oauth/users/logout/'+ Session.login +'/tokens/'+$rootScope.accessToken;
         $log.debug("logoutUrl:"+logoutUrl);
       
         $http.get( logoutUrl   )
