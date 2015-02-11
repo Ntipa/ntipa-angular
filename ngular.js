@@ -248,8 +248,8 @@ angular.module('ipublic.ntipa-angular', [])
 
             };
 }])
-.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service', 'ENV',
-    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV) {
+.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service', 'ENV','Base64',
+    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV,Base64) {
         var keyAuthorization = 'Authorization';
         var keyAccessToken = 'access.token';
         var keySession = 'user.session';
