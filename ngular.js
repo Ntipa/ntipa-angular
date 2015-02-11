@@ -266,12 +266,14 @@ angular.module('ipublic.ntipa-angular', [])
 
             login: function (param) {
 
-                var data = "grant_type=password&client_id="+ENV.ClientId+"&scope=read&username="+  param.username +"&password="+  param.password ;
+                var data = "grant_type=password&client_id="+ENV.ClientId+ "&client_secret="+ENV.ClientSecret+"&scope=read&username="+  param.username +"&password="+  param.password ;
                 $log.info('data:' + data);
                 Oauth2Service.clear();
                 $http.post('/manager/oauth/token', data, {
                     headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Accept": "application/json",
+                        "Authorization": "Basic " + Base64.encode(ENV.ClientId + ':' + ENV.ClientSecret )
                     },
                     ignoreAuthModule: 'ignoreAuthModule'
                 }).success(function (data, status, headers, config) {
