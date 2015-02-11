@@ -248,8 +248,8 @@ angular.module('ipublic.ntipa-angular', [])
 
             };
 }])
-.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service', 'ENV','Base64',
-    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV,Base64) {
+.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service', 'ENV','$base64',
+    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV,$base64) {
         var keyAuthorization = 'Authorization';
         var keyAccessToken = 'access.token';
         var keySession = 'user.session';
@@ -273,7 +273,7 @@ angular.module('ipublic.ntipa-angular', [])
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "Accept": "application/json",
-                        "Authorization": "Basic " + Base64.encode(ENV.ClientId + ':' + ENV.ClientSecret )
+                        "Authorization": "Basic " + $base64.encode(ENV.ClientId + ':' + ENV.ClientSecret )
                     },
                     ignoreAuthModule: 'ignoreAuthModule'
                 }).success(function (data, status, headers, config) {
