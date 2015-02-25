@@ -288,6 +288,7 @@ angular.module('ipublic.ntipa-angular', [])
 
                     Oauth2Service.loadAccount();
                 }).error(function (data, status, headers, config) {
+                    $rootScope.$broadcast("event:auth-bad-credentials");
                     $rootScope.authenticationError = true;
                     Session.invalidate();
                 });
