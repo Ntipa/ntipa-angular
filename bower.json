@@ -16,12 +16,13 @@
 		"tests"
 	],
 	"dependencies": {
-		"angular":"~1.2.0",
-		"angular-sanitize":"~1.2.0",
-		"angular-route":"~1.2.0",
-		"angular-touch":"~1.2.0",
+		"angular":"~1.2.20",
+		"angular-sanitize":"~1.2.20",
+		"angular-route":"~1.2.20",
+		"angular-touch":"~1.2.20",
 		"angular-base64": "~2.0.2",
-		"angular-local-storage": "~0.0.1"
+		"angular-local-storage": "~0.0.1",
+		"stomp-websocket": "2.3.4"
 	},
 	"devDependencies": {
 	}

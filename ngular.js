@@ -45,8 +45,6 @@ angular.module('ipublic.ntipa-angular', [])
         var keyMapTitolaris = 'keyMapTitolaris';
      
 
-
-
         function recursiveVociTitolario(nodes,titolarioName, titolarioId, titolarioCodice){
 
             angular.forEach(nodes, function(nodo) {
@@ -364,83 +362,116 @@ angular.module('ipublic.ntipa-angular', [])
      }
  };
 }])
-.factory('ngstomp',  ['$rootScope', '$log',  
-  function($rootScope, $log ) {
-    var self = this;
+.factory('NotifyWebsocket',
+['$rootScope','$log','$q', '$timeout', '$location',  
+   function ($rootScope,$log,$q, $timeout, $location) {
+       
+    var service = {}; 
+    var listener = $q.defer();
+    var listenerHistory = $q.defer();
+    var listenerReceive = $q.defer();
+    var stomp = null;
     
-    self.stompClient = {};
+    service.RECONNECT_TIMEOUT = 300;
+    service.SOCKET_URL = "";
+    service.LOGIN = "";
+    
 
-     function NGStomp(url,headers) {
-           
-     
- 
-     var  socket = new SockJS
-                     ( url 
-                     , 'tino:tino'
-                     , {   'debug':false
-                         , 'devel' : false
-                         , 'info' :{ 'headers': headers } 
-                         , 'protocols_whitelist':
-                             [ 'xdr-streaming'
-                             , 'xdr-polling'
-                             , 'xhr-streaming'
-                             , 'iframe-eventsource'
-                             , 'iframe-htmlfile'
-                             , 'xhr-polling'
-                             , 'websocket'
-                             ]
+    service.MAPPING_HISTORY = "/websocket/requestNotifyHistory";
+    service.MAPPING_READ = "/websocket/readNotify";
+    service.MAPPING_SEND = "/websocket/sendNotify";
+    service.MAPPING_DELIVERY = "/websocket/deliveryNotify";
 
-                       }
-                     );
+    //simple  stomp
+    service.PREFIX_USER_SIMPLE_SUBSCRIBE = '/user/';
+    service.HISTORY_SUBSCRIBE = '/historywebsocket';
 
-           self.stompClient = Stomp.over( socket );
-        }
+    //relay stomp 
+    service.PREFIX_USER_SUBSCRIBE = 'ntipa.user.';
+
+    service.RECEIVE_SUBSCRIBE = '.receivewebsocket';
+    service.WEBSOCKET_SUBSCRIBE = '.websocket';
 
 
-        NGStomp.prototype.subscribe = function(queue, callback) {
-            self.stompClient.subscribe(queue, function() {
-                var args = arguments;
-                $rootScope.$apply(function() {
-                    callback(args[0]);
-                });
-            });
-        };
+    service.readMessage = function(message){
+       stomp.send( service.MAPPING_READ ,
+                    {},
+                   JSON.stringify( message ));
+    };
+    
+    service.deliveryMessage = function(message){
+       stomp.send( service.MAPPING_DELIVERY ,
+                    {},
+                   JSON.stringify( message ));
+    };
 
-        NGStomp.prototype.send = function(queue, headers, data) {
-          self.stompClient.send(queue, headers, JSON.stringify(data));
-        };
+    service.sendMessage = function(message){
+       stomp.send( service.MAPPING_SEND ,
+                    {},
+                   JSON.stringify( message ));
+    };
 
-        NGStomp.prototype.connect = function(user, password, on_connect, on_error) {
+    service.loadHistory = function(message){
+       stomp.send( service.MAPPING_HISTORY ,
+                    {},
+                   JSON.stringify( message ));
+    };
 
-          self.stompClient.connect(user, password,
-                function() {
-              var args = arguments;
-                    $rootScope.$apply(function() {
-                        on_connect.call(undefined,args);
-                    });
-                },
-                function() {
-                  var args = arguments;
-                    $rootScope.$apply(function() {                      
-                        on_error.apply(undefined,args);
-                    });
-                });
-        };
+//LISTENER 
+    service.receive = function() {
+      return listenerReceive.promise;
+    };
 
-        NGStomp.prototype.disconnect = function(callback) {
-          self.stompClient.disconnect(function() {
-                var args = arguments;
-                $rootScope.$apply(function() {
-                    callback.apply(args);
-                });
-            });
-        };
+    service.history = function() {
+      return listenerHistory.promise;
+    };
 
-        return function(url,headers) {
-        
-        
+    service.message = function() {
+      return listener.promise;
+    };
+    
+    var reconnect = function() {
+      $timeout(function() {
+        initialize();
+      }, this.RECONNECT_TIMEOUT);
+    };
+    
+    
+    
+    var startListener = function() {
+      stomp.subscribe(service.PREFIX_USER_SUBSCRIBE +service.LOGIN+ service.WEBSOCKET_SUBSCRIBE  , function(data) {
+        listener.notify( JSON.parse(data.body)  );
+      });
 
-          return new NGStomp( url,headers );
-        };
+     stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_SUBSCRIBE   , function(data) {
+        listenerHistory.notify( JSON.parse(data.body)  );
+      });
+
+     stomp.subscribe( service.PREFIX_USER_SUBSCRIBE +service.LOGIN + service.RECEIVE_SUBSCRIBE   , function(data) {
+        listenerReceive.notify(  JSON.parse(data.body)  );
+      });
+    };
+
+    var  initialize = function(     ) {
+      stomp  = Stomp.client( service.SOCKET_URL  );
+      stomp.connect({}, startListener);
+      stomp.onclose = reconnect;
+    };
+
+    service.initialize = function( accessToken,   login ) {
+      var host = $location.host();
+      var port = $location.port();
+
+      var url = 'ws://'+host+':'+port+'/manager/websocket/notify?access_token=' + accessToken ;
+      service.SOCKET_URL = url;
+      service.LOGIN = login;
+      initialize();
+    };
+    
+    
+    return service;
+
 }]);
 
+
+ 
