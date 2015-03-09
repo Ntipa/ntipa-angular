@@ -476,7 +476,7 @@ angular.module('ipublic.ntipa-angular', [])
     };
 
     service.close = function() {
-      return stomp.close();
+      return stomp.disconnect();
     };
 
     service.initialize = function( accessToken,   login ) {
