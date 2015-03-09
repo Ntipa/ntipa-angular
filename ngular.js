@@ -464,7 +464,9 @@ angular.module('ipublic.ntipa-angular', [])
     };
 
     var  initialize = function(     ) {
-      stomp  = Stomp.client( service.SOCKET_URL  );
+      var socket  = new WebSocket( service.SOCKET_URL );
+      //stomp  = Stomp.client( service.SOCKET_URL  );
+      stomp  = Stomp.over( socket  );
       stomp.connect({}, startListener);
       stomp.onclose = reconnect;
     };
