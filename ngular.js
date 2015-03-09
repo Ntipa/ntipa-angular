@@ -369,6 +369,7 @@ angular.module('ipublic.ntipa-angular', [])
     var service = {}; 
     var listener = $q.defer();
     var listenerHistory = $q.defer();
+    var listenerCountHistory = $q.defer();
     var listenerReceive = $q.defer();
     var stomp = null;
     
@@ -385,6 +386,8 @@ angular.module('ipublic.ntipa-angular', [])
     //simple  stomp
     service.PREFIX_USER_SIMPLE_SUBSCRIBE = '/user/';
     service.HISTORY_SUBSCRIBE = '/historywebsocket';
+    service.HISTORY_COUNT_SUBSCRIBE = '/historycountwebsocket';
+
 
     //relay stomp 
     service.PREFIX_USER_SUBSCRIBE = 'ntipa.user.';
@@ -423,6 +426,10 @@ angular.module('ipublic.ntipa-angular', [])
       return listenerHistory.promise;
     };
 
+    service.countHistory = function() {
+      return listenerCountHistory.promise;
+    };
+
     service.message = function() {
       return listener.promise;
     };
@@ -442,6 +449,10 @@ angular.module('ipublic.ntipa-angular', [])
 
      stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_SUBSCRIBE   , function(data) {
         listenerHistory.notify( JSON.parse(data.body)  );
+      });
+
+     stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_COUNT_SUBSCRIBE   , function(data) {
+        listenerCountHistory.notify( JSON.parse(data.body)  );
       });
 
      stomp.subscribe( service.PREFIX_USER_SUBSCRIBE +service.LOGIN + service.RECEIVE_SUBSCRIBE   , function(data) {
