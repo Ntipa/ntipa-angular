@@ -28,8 +28,8 @@ angular.module('ipublic.ntipa-angular', [])
             'get': { method: 'GET', isArray: true}
         });
     }])
-.factory('Oauth2Service', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','$location','$base64',
-    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService,$location,$base64) {
+.factory('Oauth2Service', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','$location','$base64','NotifyWebsocket',
+    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService,$location,$base64,NotifyWebsocket) {
         var keyAuthorization = 'Authorization';
         var keyAccessToken = 'access.token';
         var keySession = 'user.session';
@@ -106,7 +106,9 @@ angular.module('ipublic.ntipa-angular', [])
                     $rootScope.account = data;
                     localStorageService.add(keySession, data);
                     $log.debug('data.enteId:'+data.enteId);
-                    
+                    $rootScope.$broadcast('loadAccountEvent', data);
+                    NotifyWebsocket.initialize($rootScope.accessToken, $rootScope.account.login);
+
                     if(data.enteId !== null && data.enteId !== 'null' ){
                         EnteService.organigramma({enteId:data.enteId},function(data){
                             $rootScope.organigramma = data;
@@ -246,8 +248,8 @@ angular.module('ipublic.ntipa-angular', [])
 
             };
 }])
-.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service', 'ENV','$base64',
-    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV,$base64) {
+.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',  '$log', 'localStorageService','EnteService','Oauth2Service', 'ENV','$base64','NotifyWebsocket',
+    function ($rootScope, $http, authService, Session, Account,$log, localStorageService, EnteService, Oauth2Service,ENV,$base64,NotifyWebsocket) {
         var keyAuthorization = 'Authorization';
         var keyAccessToken = 'access.token';
         var keySession = 'user.session';
@@ -348,6 +350,7 @@ angular.module('ipublic.ntipa-angular', [])
         $http.get( logoutUrl   )
         .success(function (data, status, headers, config) {
                  Session.invalidate();
+                 NotifyWebsocket.close();
                  Oauth2Service.clear();
 
          })
@@ -434,6 +437,7 @@ angular.module('ipublic.ntipa-angular', [])
       return listener.promise;
     };
     
+
     var reconnect = function() {
       $timeout(function() {
         initialize();
@@ -469,6 +473,10 @@ angular.module('ipublic.ntipa-angular', [])
       stomp  = Stomp.over( socket  );
       stomp.connect({}, startListener);
       stomp.onclose = reconnect;
+    };
+
+    service.close = function() {
+      return stomp.close();
     };
 
     service.initialize = function( accessToken,   login ) {
