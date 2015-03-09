@@ -441,7 +441,8 @@ angular.module('ipublic.ntipa-angular', [])
     };
     
     
-    
+    var pageRequest={page:'0',size:'50'};
+
     var startListener = function() {
       stomp.subscribe(service.PREFIX_USER_SUBSCRIBE +service.LOGIN+ service.WEBSOCKET_SUBSCRIBE  , function(data) {
         listener.notify( JSON.parse(data.body)  );
@@ -458,6 +459,8 @@ angular.module('ipublic.ntipa-angular', [])
      stomp.subscribe( service.PREFIX_USER_SUBSCRIBE +service.LOGIN + service.RECEIVE_SUBSCRIBE   , function(data) {
         listenerReceive.notify(  JSON.parse(data.body)  );
       });
+
+     service.loadHistory( pageRequest );
     };
 
     var  initialize = function(     ) {
