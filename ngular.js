@@ -375,6 +375,7 @@ angular.module('ipublic.ntipa-angular', [])
     var listenerCountHistory = $q.defer();
     var listenerReceive = $q.defer();
     var stomp = null;
+    var socket = null;
     
     service.RECONNECT_TIMEOUT = 300;
     service.SOCKET_URL = "";
@@ -468,15 +469,18 @@ angular.module('ipublic.ntipa-angular', [])
     };
 
     var  initialize = function(     ) {
-      var socket  = new WebSocket( service.SOCKET_URL );
-      //stomp  = Stomp.client( service.SOCKET_URL  );
+      //var socket  = new WebSocket( service.SOCKET_URL );
+      stomp  = Stomp.client( service.SOCKET_URL  );
       stomp  = Stomp.over( socket  );
       stomp.connect({}, startListener);
       stomp.onclose = reconnect;
     };
 
     service.close = function() {
-      return stomp.disconnect();
+     if(stomp!= null){
+        stomp.disconnect();
+     }
+        
     };
 
     service.initialize = function( accessToken,   login ) {
