@@ -394,20 +394,17 @@ angular.module('ipublic.ntipa-angular', [])
 
 
     service.readMessage = function(message){
-       stomp.send( service.MAPPING_READ ,
-                    {},
-                   JSON.stringify( message ));
+       stomp.send( service.MAPPING_READ , {},
+                   JSON.stringify(  { id: message.id } ));
     };
     
     service.deliveryMessage = function(message){
-       stomp.send( service.MAPPING_DELIVERY ,
-                    {},
-                   JSON.stringify( message ));
+       stomp.send( service.MAPPING_DELIVERY , {},
+                   JSON.stringify( { id: message.id } ));
     };
 
     service.sendMessage = function(message){
-       stomp.send( service.MAPPING_SEND ,
-                    {},
+       stomp.send( service.MAPPING_SEND , {},
                    JSON.stringify( message ));
     };
 
