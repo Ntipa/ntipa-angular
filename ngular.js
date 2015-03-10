@@ -107,7 +107,6 @@ angular.module('ipublic.ntipa-angular', [])
                     localStorageService.add(keySession, data);
                     $log.debug('data.enteId:'+data.enteId);
                     $rootScope.$broadcast('loadAccountEvent', data);
-                    NotifyWebsocket.initialize($rootScope.accessToken, $rootScope.account.login);
 
                     if(data.enteId !== null && data.enteId !== 'null' ){
                         EnteService.organigramma({enteId:data.enteId},function(data){
@@ -471,18 +470,19 @@ angular.module('ipublic.ntipa-angular', [])
     };
 
     var  initialize = function(     ) {
-      //var socket  = new WebSocket( service.SOCKET_URL );
-      //stomp  = Stomp.over( socket  );
-
-      stomp  = Stomp.client( service.SOCKET_URL  );
-      stomp.connect({}, startListener);
-      stomp.onclose = reconnect;
+     if(stomp !== null ){
+          stomp  = Stomp.client( service.SOCKET_URL  );
+          stomp.connect({}, startListener);
+          stomp.onclose = reconnect;  
+      }
+      
     };
 
     service.disconnect = function() {
      if(stomp !== null){
         stomp.disconnect(function() {
             $log.debug("Stomp disconnesso");
+            stomp = null;
         });
      }
         
