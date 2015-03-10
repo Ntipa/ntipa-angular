@@ -373,6 +373,8 @@ angular.module('ipublic.ntipa-angular', [])
     var listenerHistory = $q.defer();
     var listenerCountHistory = $q.defer();
     var listenerReceive = $q.defer();
+    var listenerBussinessKey = $q.defer();
+    
     var stomp = null;
     var socket = null;
     
@@ -390,6 +392,7 @@ angular.module('ipublic.ntipa-angular', [])
     service.PREFIX_USER_SIMPLE_SUBSCRIBE = '/user/';
     service.HISTORY_SUBSCRIBE = '/historywebsocket';
     service.HISTORY_COUNT_SUBSCRIBE = '/historycountwebsocket';
+    service.HISTORY_BUSSINESSKEY_SUBSCRIBE = '/bussineekeywebsocket';
 
 
     //relay stomp 
@@ -429,6 +432,11 @@ angular.module('ipublic.ntipa-angular', [])
       return listenerHistory.promise;
     };
 
+
+  service.bussinessKey = function() {
+      return listenerBussinessKey.promise;
+    };
+
     service.countHistory = function() {
       return listenerCountHistory.promise;
     };
@@ -461,6 +469,11 @@ angular.module('ipublic.ntipa-angular', [])
         listenerCountHistory.notify( mes  );
         $rootScope.countHistory =  mes ;
       });
+
+      stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_BUSSINESSKEY_SUBSCRIBE   , function(data) {
+          listenerBussinessKey.notify( mes  );
+      });
+
 
      stomp.subscribe( service.PREFIX_USER_SUBSCRIBE +service.LOGIN + service.RECEIVE_SUBSCRIBE   , function(data) {
         
