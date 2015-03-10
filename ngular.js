@@ -462,7 +462,9 @@ angular.module('ipublic.ntipa-angular', [])
       });
 
      stomp.subscribe( service.PREFIX_USER_SUBSCRIBE +service.LOGIN + service.RECEIVE_SUBSCRIBE   , function(data) {
-        listenerReceive.notify(  JSON.parse(data.body)  );
+        var mes =  JSON.parse(data.body);
+        listenerReceive.notify( mes  );
+        $rootScope.countHistory =  mes ;
       });
 
      service.loadHistory( pageRequest );
