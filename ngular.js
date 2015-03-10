@@ -484,6 +484,10 @@ angular.module('ipublic.ntipa-angular', [])
             $log.debug("Stomp disconnesso");
             stomp = null;
         });
+
+
+        stomp = null;
+
      }
         
     };
