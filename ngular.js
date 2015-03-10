@@ -471,7 +471,7 @@ angular.module('ipublic.ntipa-angular', [])
       });
 
       stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_BUSSINESSKEY_SUBSCRIBE   , function(data) {
-          listenerBussinessKey.notify( mes  );
+          listenerBussinessKey.notify( JSON.parse(data.body)  );
       });
 
 
