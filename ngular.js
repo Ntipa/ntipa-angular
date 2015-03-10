@@ -481,7 +481,9 @@ angular.module('ipublic.ntipa-angular', [])
 
     service.disconnect = function() {
      if(stomp !== null){
-        stomp.disconnect();
+        stomp.disconnect(function() {
+            $log.debug("Stomp disconnesso");
+        });
      }
         
     };
