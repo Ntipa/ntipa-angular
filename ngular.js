@@ -470,7 +470,7 @@ angular.module('ipublic.ntipa-angular', [])
     };
 
     var  initialize = function(     ) {
-     if(stomp !== null ){
+     if(stomp === null ){
           stomp  = Stomp.client( service.SOCKET_URL  );
           stomp.connect({}, startListener);
           stomp.onclose = reconnect;  
