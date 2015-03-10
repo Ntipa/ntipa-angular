@@ -350,7 +350,7 @@ angular.module('ipublic.ntipa-angular', [])
         $http.get( logoutUrl   )
         .success(function (data, status, headers, config) {
                  Session.invalidate();
-                 NotifyWebsocket.close();
+                 NotifyWebsocket.disconnect();
                  Oauth2Service.clear();
 
          })
@@ -476,8 +476,8 @@ angular.module('ipublic.ntipa-angular', [])
       stomp.onclose = reconnect;
     };
 
-    service.close = function() {
-     if(stomp!= null){
+    service.disconnect = function() {
+     if(stomp !== null){
         stomp.disconnect();
      }
         
@@ -486,7 +486,6 @@ angular.module('ipublic.ntipa-angular', [])
     service.initialize = function( accessToken,   login ) {
       var host = $location.host();
       var port = $location.port();
-
       var url = 'ws://'+host+':'+port+'/manager/websocket/notify?access_token=' + accessToken ;
       service.SOCKET_URL = url;
       service.LOGIN = login;
