@@ -457,13 +457,15 @@ angular.module('ipublic.ntipa-angular', [])
       });
 
      stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_COUNT_SUBSCRIBE   , function(data) {
-        listenerCountHistory.notify( JSON.parse(data.body)  );
+        var mes =  JSON.parse(data.body);
+        listenerCountHistory.notify( mes  );
+        $rootScope.countHistory =  mes ;
       });
 
      stomp.subscribe( service.PREFIX_USER_SUBSCRIBE +service.LOGIN + service.RECEIVE_SUBSCRIBE   , function(data) {
-        var mes =  JSON.parse(data.body);
-        listenerReceive.notify( mes  );
-        $rootScope.countHistory =  mes ;
+        
+        listenerReceive.notify(  JSON.parse(data.body)   );
+        
       });
 
      service.loadHistory( pageRequest );
@@ -484,10 +486,7 @@ angular.module('ipublic.ntipa-angular', [])
             $log.debug("Stomp disconnesso");
             stomp = null;
         });
-
-
         stomp = null;
-
      }
         
     };
