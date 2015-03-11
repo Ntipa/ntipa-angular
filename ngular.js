@@ -453,7 +453,7 @@ angular.module('ipublic.ntipa-angular', [])
     };
     
     
-    var pageRequest={page:'0',size:'50'};
+    var pageRequest={page:'0',size:'10'};
 
     var startListener = function() {
       stomp.subscribe(service.PREFIX_USER_SUBSCRIBE +service.LOGIN+ service.WEBSOCKET_SUBSCRIBE  , function(data) {
