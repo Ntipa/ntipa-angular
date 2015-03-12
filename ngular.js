@@ -383,6 +383,7 @@ angular.module('ipublic.ntipa-angular', [])
     service.LOGIN = "";
     
 
+    service.MAPPING_ROOM = "/websocket/requestRoom";
     service.MAPPING_HISTORY = "/websocket/requestNotifyHistory";
     service.MAPPING_READ = "/websocket/readNotify";
     service.MAPPING_SEND = "/websocket/sendNotify";
@@ -422,6 +423,14 @@ angular.module('ipublic.ntipa-angular', [])
                     {},
                    JSON.stringify( message ));
     };
+
+
+ service.loadRoom = function(message){
+       stomp.send( service.MAPPING_ROOM ,
+                    {},
+                   JSON.stringify( message ));
+    };
+
 
 //LISTENER 
     service.receive = function() {
