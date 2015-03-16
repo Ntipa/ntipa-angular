@@ -495,7 +495,10 @@ angular.module('ipublic.ntipa-angular', [])
 
     var  initialize = function(     ) {
      if(stomp === null ){
-          stomp  = Stomp.client( service.SOCKET_URL  );
+          //var conn = new WebSocket( service.SOCKET_URL );
+          var conn = new SockJS(url);
+          stomp  = Stomp.over( conn  );
+          //stomp  = Stomp.client( service.SOCKET_URL  );
           stomp.connect({}, startListener);
           stomp.onclose = reconnect;  
       }
@@ -516,7 +519,8 @@ angular.module('ipublic.ntipa-angular', [])
     service.initialize = function( accessToken,   login ) {
       var host = $location.host();
       var port = $location.port();
-      var url = 'ws://'+host+':'+port+'/manager/websocket/notify?access_token=' + accessToken ;
+    //  var url = 'ws://'+host+':'+port+'/manager/websocket/notify?access_token=' + accessToken ;
+      var url = 'http://'+host+':'+port+'/manager/websocket/notify' ;
       service.SOCKET_URL = url;
       service.LOGIN = login;
       initialize();
