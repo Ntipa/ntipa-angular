@@ -519,7 +519,14 @@ angular.module('ipublic.ntipa-angular', [])
     service.initialize = function( accessToken,   login ) {
       var host = $location.host();
       var port = $location.port();
-      var url = 'ws://'+host+':'+port+'/manager/websocket/notify?access_token=' + accessToken ;
+      var protocol = $location.protocol();
+      var ws = 'ws';
+      
+      if(protocol === 'https' ){
+    	  ws = 'wss';
+      }
+     
+      var url = ws+'://'+host+':'+port+'/manager/websocket/notify?access_token=' + accessToken ;
     //  var url = 'http://'+host+':'+port+'/manager/websocket/notify' ;
       service.SOCKET_URL = url;
       service.LOGIN = login;
