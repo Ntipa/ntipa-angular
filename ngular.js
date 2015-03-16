@@ -496,7 +496,7 @@ angular.module('ipublic.ntipa-angular', [])
     var  initialize = function(     ) {
      if(stomp === null ){
           //var conn = new WebSocket( service.SOCKET_URL );
-          var conn = new SockJS(url);
+          var conn = new SockJS( service.SOCKET_URL  );
           stomp  = Stomp.over( conn  );
           //stomp  = Stomp.client( service.SOCKET_URL  );
           stomp.connect({}, startListener);
