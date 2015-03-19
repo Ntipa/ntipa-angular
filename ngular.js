@@ -512,10 +512,12 @@ angular.module('ipublic.ntipa-angular', [])
         
       });
 
-     service.loadHistory( pageRequest );
      
      //da cambiare con altro
      service.loadOnline({enteId:'1'});
+     service.loadRoom( {page:0 , size:10 } );  
+     service.loadHistory( pageRequest );
+
      
     };
 
