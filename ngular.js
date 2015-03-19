@@ -373,6 +373,7 @@ angular.module('ipublic.ntipa-angular', [])
     var listenerHistory = $q.defer();
     var listenerCountHistory = $q.defer();
     var listenerReceive = $q.defer();
+    var listenerOnline = $q.defer();
     var listenerRoom = $q.defer();
     
     var stomp = null;
@@ -384,6 +385,8 @@ angular.module('ipublic.ntipa-angular', [])
     
 
     service.MAPPING_ROOM = "/websocket/requestRoom";
+    service.MAPPING_ONLINE = "/websocket/requestUserOnline";
+    
     service.MAPPING_HISTORY = "/websocket/requestNotifyHistory";
     service.MAPPING_READ = "/websocket/readNotify";
     service.MAPPING_SEND = "/websocket/sendNotify";
@@ -401,6 +404,7 @@ angular.module('ipublic.ntipa-angular', [])
 
     service.RECEIVE_SUBSCRIBE = '.receivewebsocket';
     service.WEBSOCKET_SUBSCRIBE = '.websocket';
+    service.WEBSOCKET_ONLINE_SUBSCRIBE = '.onlinewebsocket';
 
 
     service.readMessage = function(message){
@@ -432,11 +436,24 @@ angular.module('ipublic.ntipa-angular', [])
     };
 
 
+    service.loadOnline = function(message){
+        stomp.send( service.MAPPING_ONLINE ,
+                     {},
+                    JSON.stringify( message ));
+     };
+     
 //LISTENER 
     service.receive = function() {
       return listenerReceive.promise;
     };
 
+    service.online = function() {
+        return listenerOnline.promise;
+      };
+
+      
+    
+    
     service.history = function() {
       return listenerHistory.promise;
     };
@@ -469,6 +486,11 @@ angular.module('ipublic.ntipa-angular', [])
         listener.notify( JSON.parse(data.body)  );
       });
 
+      
+      stomp.subscribe(service.PREFIX_USER_SUBSCRIBE +service.LOGIN+ service.WEBSOCKET_ONLINE_SUBSCRIBE  , function(data) {
+         listenerOnline.notify( JSON.parse(data.body)  );
+        });
+      
      stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_SUBSCRIBE   , function(data) {
         listenerHistory.notify( JSON.parse(data.body)  );
       });
@@ -491,6 +513,10 @@ angular.module('ipublic.ntipa-angular', [])
       });
 
      service.loadHistory( pageRequest );
+     
+     //da cambiare con altro
+     service.loadOnline({enteId:'1'});
+     
     };
 
     var  initialize = function(     ) {
@@ -523,7 +549,7 @@ angular.module('ipublic.ntipa-angular', [])
       var ws = 'ws';
       
       if(protocol === 'https' ){
-    	  ws = 'wss';
+       ws = 'wss';
       }
      
       var url = ws+'://'+host+':'+port+'/manager/websocket/notify?access_token=' + accessToken ;
