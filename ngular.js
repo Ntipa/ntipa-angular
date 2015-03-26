@@ -373,6 +373,7 @@ angular.module('ipublic.ntipa-angular', [])
     var listenerHistory = $q.defer();
     var listenerCountHistory = $q.defer();
     var listenerRoomTypeCountHistory = $q.defer();
+    var listenerRoomCountHistory = $q.defer();
     var listenerReceive = $q.defer();
     var listenerOnline = $q.defer();
     var listenerRoom = $q.defer();
@@ -396,8 +397,11 @@ angular.module('ipublic.ntipa-angular', [])
     //simple  stomp
     service.PREFIX_USER_SIMPLE_SUBSCRIBE = '/user/';
     service.HISTORY_SUBSCRIBE = '/historywebsocket';
+
     service.HISTORY_COUNT_SUBSCRIBE = '/historycountwebsocket';
+    service.HISTORY_ROOM_COUNT_SUBSCRIBE = '/historyroomcountwebsocket';
     service.HISTORY_ROOM_TYPE_COUNT_SUBSCRIBE = '/historyroomtypecountwebsocket';
+    
     service.HISTORY_ROOM_SUBSCRIBE = '/roomwebsocket';
 
 
@@ -452,16 +456,13 @@ angular.module('ipublic.ntipa-angular', [])
     service.online = function() {
         return listenerOnline.promise;
       };
-
-      
-    
-    
+     
     service.history = function() {
       return listenerHistory.promise;
     };
 
 
-  service.room = function() {
+    service.room = function() {
       return listenerRoom.promise;
     };
 
@@ -469,11 +470,13 @@ angular.module('ipublic.ntipa-angular', [])
       return listenerCountHistory.promise;
     };
 
-
- service.roomTypeCountHistory = function() {
-      return listenerRoomTypeCountHistory.promise;
+    service.roomCountHistory = function() {
+      return listenerRoomCountHistory.promise;
     };
 
+    service.roomTypeCountHistory = function() {
+      return listenerRoomTypeCountHistory.promise;
+    };
 
 
     service.message = function() {
@@ -502,6 +505,13 @@ angular.module('ipublic.ntipa-angular', [])
       
      stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_SUBSCRIBE   , function(data) {
         listenerHistory.notify( JSON.parse(data.body)  );
+      });
+
+
+
+    stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_ROOM_COUNT_SUBSCRIBE   , function(data) {
+        var mes =  JSON.parse(data.body);
+        listenerRoomCountHistory.notify( mes  );
       });
 
      stomp.subscribe( service.PREFIX_USER_SIMPLE_SUBSCRIBE +service.LOGIN + service.HISTORY_ROOM_TYPE_COUNT_SUBSCRIBE   , function(data) {
