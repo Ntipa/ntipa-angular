@@ -387,7 +387,6 @@ angular.module('ipublic.ntipa-angular', [])
     
 
     service.MAPPING_ROOM = "/websocket/requestRoom";
-    service.MAPPING_ONLINE = "/websocket/requestUserOnline";
     
     service.MAPPING_HISTORY = "/websocket/requestNotifyHistory";
     service.MAPPING_READ = "/websocket/readNotify";
@@ -442,11 +441,7 @@ angular.module('ipublic.ntipa-angular', [])
     };
 
 
-    service.loadOnline = function(message){
-        stomp.send( service.MAPPING_ONLINE ,
-                     {},
-                    JSON.stringify( message ));
-     };
+ 
      
 //LISTENER 
     service.receive = function() {
@@ -530,16 +525,14 @@ angular.module('ipublic.ntipa-angular', [])
           listenerRoom.notify( JSON.parse(data.body) );
       });
 
-
      stomp.subscribe( service.PREFIX_USER_SUBSCRIBE +service.LOGIN + service.RECEIVE_SUBSCRIBE   , function(data) {
-        
         listenerReceive.notify(  JSON.parse(data.body)   );
         
       });
 
-     
      //da cambiare con altro
-     service.loadOnline({enteId:'1'});
+     //service.loadOnline({enteId:'1'});
+
      service.loadRoom( {page:0 , size:10 } );  
      service.loadHistory( pageRequest );
 
