@@ -545,6 +545,12 @@ angular.module('ipublic.ntipa-angular', [])
           //var conn = new SockJS( service.SOCKET_URL  );
           //stomp  = Stomp.over( conn  );
           stomp  = Stomp.client( service.SOCKET_URL  );
+          stomp.heartbeat.outgoing = 20000; // client will send heartbeats every 20000ms
+          stomp.heartbeat.incoming = 0;      // client does not want to receive heartbeats
+                                       // from the server
+          stomp.debug = function(message){
+            $log.debug(message);
+          }
           stomp.connect({}, startListener);
           stomp.onclose = reconnect;  
       }
