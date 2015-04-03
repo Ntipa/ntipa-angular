@@ -549,7 +549,7 @@ angular.module('ipublic.ntipa-angular', [])
           stomp.heartbeat.incoming = 0;      // client does not want to receive heartbeats
                                        // from the server
           stomp.debug = function(message){
-            $log.debug(message);
+         //   $log.debug(message);
           }
           stomp.connect({}, startListener);
           stomp.onclose = reconnect;  
