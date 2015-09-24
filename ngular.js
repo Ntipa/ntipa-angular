@@ -43,9 +43,8 @@ angular.module('ipublic.ntipa-angular', [])
 
         var keyMapCategorias = 'keyMapCategorias';
         var keyMapTitolaris = 'keyMapTitolaris';
-     
 
-        function recursiveVociTitolario(nodes,titolarioName, titolarioId, titolarioCodice){
+        function recursiveVociTitolario(nodes,titolarioName, titolarioId, titolarioCodice,processoBpm){
 
             angular.forEach(nodes, function(nodo) {
 
@@ -56,12 +55,13 @@ angular.module('ipublic.ntipa-angular', [])
                     titolarioIdVoce: nodo.id,
                     titolarioCodiceVoce: nodo.indice,
                     titolarioNomeVoce: nodo.voce,
+                    processoBpm: nodo.processoBpm
                 };
                // $log.debug(nodo);
                // $log.debug(nodoCorrente);
                 $rootScope.titolari.push(nodoCorrente);
 
-                recursiveVociTitolario(nodo.nodes, titolarioName , titolarioId, titolarioCodice);
+                recursiveVociTitolario(nodo.nodes, titolarioName , titolarioId, titolarioCodice,processoBpm);
             });
         }
 
