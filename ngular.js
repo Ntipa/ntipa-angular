@@ -44,7 +44,7 @@ angular.module('ipublic.ntipa-angular', [])
         var keyMapCategorias = 'keyMapCategorias';
         var keyMapTitolaris = 'keyMapTitolaris';
 
-        function recursiveVociTitolario(nodes,titolarioName, titolarioId, titolarioCodice,processoBpm){
+        function recursiveVociTitolario(nodes,titolarioName, titolarioId, titolarioCodice, processoBpm){
 
             angular.forEach(nodes, function(nodo) {
 
@@ -57,6 +57,7 @@ angular.module('ipublic.ntipa-angular', [])
                     titolarioNomeVoce: nodo.voce,
                     processoBpm: nodo.processoBpm
                 };
+
                // $log.debug(nodo);
                // $log.debug(nodoCorrente);
                 $rootScope.titolari.push(nodoCorrente);
@@ -75,7 +76,7 @@ angular.module('ipublic.ntipa-angular', [])
 
               angular.forEach(struttura.titolari, function(titolario) {
                 titolario.nodes = angular.fromJson(titolario.voci);
-                recursiveVociTitolario(titolario.nodes,titolario.name,titolario.id, titolario.codice);
+                recursiveVociTitolario(titolario.nodes,titolario.name,titolario.id, titolario.codice, titolario.processoBpm);
 
                 
              });
@@ -549,8 +550,9 @@ angular.module('ipublic.ntipa-angular', [])
           stomp.heartbeat.incoming = 0;      // client does not want to receive heartbeats
                                        // from the server
           stomp.debug = function(message){
-         //   $log.debug(message);
-          }
+         //   $log.debug();
+          };
+
           stomp.connect({}, startListener);
           stomp.onclose = reconnect;  
       }
